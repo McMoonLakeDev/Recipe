@@ -70,6 +70,17 @@ public class RecipePlugin extends JavaPlugin implements MoonLakeRecipe {
     }
 
     /**
+     * 获取月色之湖合成插件主类对象
+     *
+     * @return 主类对象
+     */
+    @Override
+    public RecipePlugin getMain() {
+
+        return this;
+    }
+
+    /**
      * 获取月色之湖控制台日志对象
      *
      * @return 日志对象

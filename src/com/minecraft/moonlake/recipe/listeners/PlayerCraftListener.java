@@ -36,8 +36,11 @@ public class PlayerCraftListener implements Listener {
     public void onPrepare(PrepareItemCraftEvent event) {
 
         if (event.getRecipe() == null) return;
-        if (!RecipeManager.hasAdvanceRecipe(event.getRecipe().getResult())) return;
+        if (!RecipeManager.hasAdvanceRecipe(event.getRecipe().getResult())) {
 
+            event.getInventory().setResult(new ItemStack(Material.AIR));
+            return;
+        }
         List<AdvancedRecipe> advancedRecipeList = RecipeManager.getAdvanceRecipe(event.getRecipe().getResult());
 
         if (advancedRecipeList == null || advancedRecipeList.size() <= 0) {
@@ -63,6 +66,7 @@ public class PlayerCraftListener implements Listener {
 
         if (event.getRecipe() == null) return;
         if (event.getSlotType() != InventoryType.SlotType.RESULT) return;
+        if (ItemManager.isAir(event.getRecipe().getResult())) return;
         if (!RecipeManager.hasAdvanceRecipe(event.getRecipe().getResult())) return;
 
         List<AdvancedRecipe> advancedRecipeList = RecipeManager.getAdvanceRecipe(event.getRecipe().getResult());
@@ -102,5 +106,7 @@ public class PlayerCraftListener implements Listener {
             event.setResult(Event.Result.ALLOW);
             return;
         }
+        // shift click craft all
+        RecipeManager.handleCostShiftAdvanceRecipeMatrix(finalRecipe, recipeMatrix, inventoryMatrix, event);
     }
 }
