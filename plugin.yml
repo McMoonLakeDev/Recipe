@@ -1,0 +1,6 @@
+name: MoonLakeRecipe
+main: com.minecraft.moonlake.recipe.RecipePlugin
+version: 1.0
+author: Month_Light
+depend: [MoonLake]
+website: http://www.mcyszh.com
