@@ -194,7 +194,16 @@ public class RecipeManager {
 
             if(inventorySurplusAmount <= 0) {
 
-                finalMatrix[i] = new ItemStack(Material.AIR, 0);
+                ItemStack callBackMatrix = hasCallBackItemStack(recipeMatrix[i].getType());
+
+                if(callBackMatrix != null) {
+                    // has call back item stack matrix
+                    finalMatrix[i] = callBackMatrix;
+                }
+                else {
+                    // else is air
+                    finalMatrix[i] = new ItemStack(Material.AIR, 0);
+                }
                 continue;
             }
             finalMatrix[i] = inventoryMatrix[i];
@@ -289,7 +298,16 @@ public class RecipeManager {
 
             if(finalMatrixAmount <= 0) {
 
-                inventoryMatrix[i] = new ItemStack(Material.AIR);
+                ItemStack callBackMatrix = hasCallBackItemStack(recipeMatrix[i].getType());
+
+                if(callBackMatrix != null) {
+                    // has call back item stack matrix
+                    inventoryMatrix[i] = callBackMatrix;
+                }
+                else {
+                    // else is air
+                    inventoryMatrix[i] = new ItemStack(Material.AIR);
+                }
             }
             else {
 
@@ -332,6 +350,19 @@ public class RecipeManager {
                 }
             }.runTaskLater(getMain().getMain(), 2L);
         }
+    }
+
+    protected static ItemStack hasCallBackItemStack(Material type) {
+
+        if(type == Material.WATER_BUCKET || type == Material.LAVA_BUCKET || type == Material.MILK_BUCKET) {
+
+            return new ItemStack(Material.BUCKET);
+        }
+        else if(type == Material.POTION) {
+
+            return new ItemStack(Material.GLASS_BOTTLE);
+        }
+        return null;
     }
 
     /**
