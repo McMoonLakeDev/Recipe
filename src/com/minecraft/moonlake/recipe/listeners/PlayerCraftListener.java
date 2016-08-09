@@ -12,6 +12,7 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 
 import java.util.List;
 
@@ -36,11 +37,8 @@ public class PlayerCraftListener implements Listener {
     public void onPrepare(PrepareItemCraftEvent event) {
 
         if (event.getRecipe() == null) return;
-        if (!RecipeManager.hasAdvanceRecipe(event.getRecipe().getResult())) {
-
-            event.getInventory().setResult(new ItemStack(Material.AIR));
-            return;
-        }
+        if (!(event.getRecipe() instanceof ShapedRecipe)) return;
+        if (!RecipeManager.hasAdvanceRecipe(event.getRecipe().getResult())) return;
         List<AdvancedRecipe> advancedRecipeList = RecipeManager.getAdvanceRecipe(event.getRecipe().getResult());
 
         if (advancedRecipeList == null || advancedRecipeList.size() <= 0) {
@@ -65,6 +63,7 @@ public class PlayerCraftListener implements Listener {
     public void onCraft(CraftItemEvent event) {
 
         if (event.getRecipe() == null) return;
+        if (!(event.getRecipe() instanceof ShapedRecipe)) return;
         if (event.getSlotType() != InventoryType.SlotType.RESULT) return;
         if (ItemManager.isAir(event.getRecipe().getResult())) return;
         if (!RecipeManager.hasAdvanceRecipe(event.getRecipe().getResult())) return;

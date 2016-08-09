@@ -125,10 +125,6 @@ public final class AdvancedRecipeManager implements MoonLakeRecipeManager {
             }
             bukkitRecipe = shapedRecipe;
         }
-        else if(recipe instanceof AdvancedShapelessRecipe) {
-
-
-        }
         if(bukkitRecipe == null || !Bukkit.getServer().addRecipe(bukkitRecipe)) {
 
             throw new IllegalRecipeException("The Bukkit Register Recipe Exception.");
@@ -149,11 +145,42 @@ public final class AdvancedRecipeManager implements MoonLakeRecipeManager {
      * @param recipe 合成对象
      * @throws IllegalRecipeException 如果高级配方为空则抛出异常
      */
-    @Deprecated
     @Override
     public <T extends AdvancedRecipe> void unregister(T recipe) throws IllegalRecipeException {
 
-        throw new IllegalRecipeException("The Bukkit Cannot Unregister Recipe.");
+        if(recipe == null) {
+
+            throw new IllegalRecipeException();
+        }
+        unregister(recipe.getResult());
+    }
+
+    /**
+     * 卸载月色之湖高级合成对象
+     *
+     * @param result 结果物品栈
+     * @throws IllegalRecipeException 如果结果物品栈为空或为空气则抛出异常
+     */
+    @Override
+    public void unregister(ItemStack result) throws IllegalRecipeException {
+
+        if(ItemManager.isAir(result)) {
+
+            throw new IllegalRecipeException();
+        }
+        if(advancedRecipeMap.containsKey(result)) {
+
+            advancedRecipeMap.remove(result);
+        }
+    }
+
+    /**
+     * 卸载月色之湖所有的高级合成对象
+     */
+    @Override
+    public void unregisterAll() {
+
+        advancedRecipeMap.clear();
     }
 
     /**

@@ -1,13 +1,17 @@
 package com.minecraft.moonlake.recipe;
 
+import com.minecraft.moonlake.MoonLakePlugin;
 import com.minecraft.moonlake.api.MLogger;
-import com.minecraft.moonlake.api.itemlib.ItemBuilder;
-import com.minecraft.moonlake.recipe.api.AdvancedShapedRecipe;
+import com.minecraft.moonlake.gui.GUIPlugin;
+import com.minecraft.moonlake.gui.api.MoonLakeGUIManager;
 import com.minecraft.moonlake.recipe.api.MoonLakeRecipe;
 import com.minecraft.moonlake.recipe.api.MoonLakeRecipeManager;
+import com.minecraft.moonlake.recipe.commands.Commandrecipe;
+import com.minecraft.moonlake.recipe.listeners.GUIListener;
 import com.minecraft.moonlake.recipe.listeners.PlayerCraftListener;
+import com.minecraft.moonlake.recipe.manager.RecipeManager;
 import com.minecraft.moonlake.recipe.wrappers.AdvancedRecipeManager;
-import org.bukkit.Material;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -16,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class RecipePlugin extends JavaPlugin implements MoonLakeRecipe {
 
     private final MLogger mLogger;
+    private MoonLakeGUIManager guiManager;
     private MoonLakeRecipeManager manager;
     private static MoonLakeRecipe MAIN;
 
@@ -29,15 +34,24 @@ public class RecipePlugin extends JavaPlugin implements MoonLakeRecipe {
 
         MAIN = this;
 
+        if(!this.setupMoonLake()) {
+
+            this.getMLogger().warn("前置月色之湖核心API插件加载失败.");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        if(!this.setupMoonLakeGUI()) {
+
+            this.getMLogger().warn("前置月色之湖 GUI 插件加载失败.");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         this.manager = new AdvancedRecipeManager(this);
 
-        // 添加压缩附魔金苹果合成
-        AdvancedShapedRecipe shapedRecipe = new AdvancedShapedRecipe(new ItemBuilder(Material.GOLDEN_APPLE, 1).setAmount(3).build());
-        shapedRecipe.shape("###", "@@@", "###");
-        shapedRecipe.setIngredient('#', Material.GOLD_BLOCK, 0, 3);
-        shapedRecipe.setIngredient('@', Material.APPLE);
-        shapedRecipe.register();
+        RecipeManager.loadAllRecipe();
 
+        this.getCommand("recipe").setExecutor(new Commandrecipe(this));
+        this.getServer().getPluginManager().registerEvents(new GUIListener(this), this);
         this.getServer().getPluginManager().registerEvents(new PlayerCraftListener(this), this);
         this.getMLogger().info("月色之湖自定义合成插件 v" + getDescription().getVersion() + " 成功加载.");
     }
@@ -45,7 +59,33 @@ public class RecipePlugin extends JavaPlugin implements MoonLakeRecipe {
     @Override
     public void onDisable() {
 
+        getManager().unregisterAll();
+    }
 
+    private void initFolder() {
+
+    }
+
+    /**
+     * 加载月色之湖前置核心 API 插件
+     *
+     * @return 是否加载成功
+     */
+    private boolean setupMoonLake() {
+
+        Plugin plugin = this.getServer().getPluginManager().getPlugin("MoonLake");
+        return plugin != null && plugin instanceof MoonLakePlugin;
+    }
+
+    /**
+     * 加载月色之湖前置 GUI 插件
+     *
+     * @return 是否加载成功
+     */
+    private boolean setupMoonLakeGUI() {
+
+        Plugin plugin = this.getServer().getPluginManager().getPlugin("MoonLakeGUI");
+        return plugin != null && plugin instanceof GUIPlugin && (this.guiManager = ((GUIPlugin)plugin).getManager()) != null;
     }
 
     /**
@@ -100,5 +140,16 @@ public class RecipePlugin extends JavaPlugin implements MoonLakeRecipe {
     public MoonLakeRecipeManager getManager() {
 
         return manager;
+    }
+
+    /**
+     * 获取月色之湖 GUI 管理实例对象
+     *
+     * @return GUI 管理实例对象
+     */
+    @Override
+    public MoonLakeGUIManager getGUIManager() {
+
+        return guiManager;
     }
 }

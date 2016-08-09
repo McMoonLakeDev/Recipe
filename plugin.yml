@@ -1,6 +1,10 @@
 name: MoonLakeRecipe
 main: com.minecraft.moonlake.recipe.RecipePlugin
-version: 1.0
+version: 1.1
 author: Month_Light
-depend: [MoonLake]
+depend: [MoonLake, MoonLakeGUI]
 website: http://www.mcyszh.com
+commands:
+  recipe:
+    description: 月色之湖高级合成命令帮助
+    usage: /<command> help

@@ -67,4 +67,10 @@ public abstract class AdvancedAbstractRecipe implements AdvancedRecipe {
 
         RecipePlugin.getInstances().getManager().unregister(this);
     }
+
+    @Override
+    public String toString() {
+
+        return super.toString();
+    }
 }

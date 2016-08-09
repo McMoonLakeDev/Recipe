@@ -1,6 +1,7 @@
 package com.minecraft.moonlake.recipe.api;
 
 import com.minecraft.moonlake.api.MLogger;
+import com.minecraft.moonlake.gui.api.MoonLakeGUIManager;
 import com.minecraft.moonlake.recipe.RecipePlugin;
 
 /**
@@ -28,4 +29,11 @@ public interface MoonLakeRecipe {
      * @return 管理实例对象
      */
     MoonLakeRecipeManager getManager();
+
+    /**
+     * 获取月色之湖 GUI 管理实例对象
+     *
+     * @return GUI 管理实例对象
+     */
+    MoonLakeGUIManager getGUIManager();
 }
